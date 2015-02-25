@@ -1,0 +1,47 @@
+package pegPuz;
+
+import org.junit.runner.RunWith;
+import de.jdemo.annotation.Demo;
+import de.jdemo.junit.DemoAsTestRunner;
+
+@RunWith (DemoAsTestRunner.class)
+public class PegPuzGUIDemos extends de.jdemo.extensions.SwingDemoCase {
+
+	@Demo
+	public void InteractiveGameView() {
+		PegPuzGameModel model = new PegPuzGameModel();
+		PegPuzBoardViewer view;
+		view = new PegPuzBoardViewer(model);
+		PegPuzBoardController ctrl = new PegPuzBoardController(model,view);
+		view.addMouseListener(ctrl);
+		view.buildGUI();
+		view.updateGUI();
+		show(view);
+	}
+	
+	@Demo
+	public void GameInProgress() {
+		PegPuzGameModel model = new PegPuzGameModel();
+		model.playLoc(1);
+		model.playLoc(2);
+		PegPuzBoardViewer view;
+		view = new PegPuzBoardViewer(model);
+		PegPuzBoardController ctrl = new PegPuzBoardController(model,view);
+		view.addMouseListener(ctrl);
+		view.buildGUI();
+		view.updateGUI();
+		show(view);
+	}
+	
+	
+	@Demo
+	public void GamePanel() {
+		PegPuzGameModel model = new PegPuzGameModel();
+		PegPuzBoardViewer view;
+		view = new PegPuzBoardViewer(model);
+		view.buildGUI();
+		view.updateGUI();
+		show(view);
+	}
+
+}

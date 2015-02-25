@@ -1,0 +1,181 @@
+package pegPuz;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class PegPuzBoard {	
+	protected final int NE = 0, E = 1, SE = 2, SW = 3, W = 4, NW = 5;
+	public enum Piece{EMPTY, PEG, UNDEFINED};
+	public enum Dir{NE, E, SE, SW, W, NW};
+	
+	private int MAX_LOCATIONS;
+	Piece[] gameLocation;
+	
+	// 2D Array with all neighbors
+	// Top-to-Bottom: NE, E, SE, SW, W, NW respectively
+	// Left-to-Right: Location - 1 (array index 0)
+	private int[][] locNeighbors = new int[][]{
+//Locations:   1  2  3  4  5  6  7  8  9 10 11 12 13 14  15
+			  {0, 1, 0, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 10, 0}, // NE
+			  {0, 3, 0, 5, 6, 0, 8, 9, 10, 0, 12, 13, 14, 15, 0}, // E
+			  {3, 5, 6, 8, 9, 10, 12, 13, 14, 15, 0, 0, 0, 0, 0}, // SE
+			  {2, 4, 5, 7, 8, 9, 11, 12, 13, 14, 0, 0, 0, 0, 0}, // SW
+			  {0, 0, 2, 0, 4, 5, 0, 7, 8, 9, 0, 11, 12, 13, 14}, // W
+			  {0, 0, 1, 0, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 10} // SW
+			};
+	
+	public PegPuzBoard(){
+		MAX_LOCATIONS = 15;
+		gameLocation = new Piece[MAX_LOCATIONS];
+		//when creating a PegPuzBoard, set every location to EMPTY
+		for(int i = 0; i < MAX_LOCATIONS; i++)
+			gameLocation[i] = Piece.EMPTY;
+	}
+	
+	public PegPuzBoard(int size){
+		MAX_LOCATIONS = size;
+		gameLocation = new Piece[MAX_LOCATIONS];
+
+		for(int i = 0; i< MAX_LOCATIONS; i++)
+			gameLocation[i] = Piece.EMPTY;
+	} 
+	
+	/**
+	 * Gets the Piece type at a specified location (1-15)
+	 * @param loc
+	 * @return The Piece type (EMPTY or PEG) at the specified location. Returns UNDEFINED if the location is not valid.
+	 */
+	public Piece getWhatIsAtLoc(int loc){
+		if(loc < 1 || loc > 15){
+			return Piece.UNDEFINED;
+		}
+			return gameLocation[loc - 1];
+	}
+	 
+	/**
+	 * Sets the given Piece type at the location specified
+	 * @param loc
+	 * @param pieceType
+	 */
+	public void setWhatIsAtLoc(int loc, Piece pieceType){
+		gameLocation[loc - 1] = pieceType;
+	}
+	
+	/**
+	 * Gets an array of valid directions at a location specified
+	 * @param loc
+	 * @return an array of directions based on the location specified
+	 */
+	public Dir[] getNeighborDir(int loc) {
+		//create list of directions based on the location
+		List<Dir> dirList = new ArrayList<Dir>();
+		//cycle through 2D array (directions X location) 
+		for(int i = 0; i < 6; i++){
+			//if the array value is not 0, then there is a neighbor
+			if(locNeighbors[i][loc - 1] != 0){
+				//add the direction to the list
+				switch(i){
+				case NE:
+					dirList.add(Dir.NE);
+					break;
+				case E:
+					dirList.add(Dir.E);
+					break;
+				case SE:
+					dirList.add(Dir.SE);
+					break;
+				case SW:
+					dirList.add(Dir.SW);
+					break;
+				case W:
+					dirList.add(Dir.W);
+					break;
+				case NW:
+					dirList.add(Dir.NW);
+					break;
+				}
+			}
+		}
+		
+		//create new array from the ArrayList, and return new array
+		Dir[] DirArray = new Dir[dirList.size()];
+		DirArray = dirList.toArray(DirArray);
+		return DirArray;
+	}
+	
+	/**
+	 * This method will get the location number of a neighbor in the direction that is specified
+	 * @param loc
+	 * @param direction
+	 * @return The location (1-15) of the neighbor. Returns 0 if there is no neighbor in that location.  
+	 */
+	public int getLocInDir (int loc, Dir direction) {
+		int locResult = 0; 
+		
+		switch(direction){
+		case NE:
+			locResult = locNeighbors[NE][loc - 1];
+			break;
+		case E:
+			locResult = locNeighbors[E][loc - 1];
+			break;
+		case SE:
+			locResult = locNeighbors[SE][loc - 1];
+			break;
+		case SW:
+			locResult = locNeighbors[SW][loc - 1];
+			break;
+		case W:
+			locResult = locNeighbors[W][loc - 1];
+			break;
+		case NW:
+			locResult = locNeighbors[NW][loc - 1];
+			break;
+		}
+		
+		return locResult;
+	}
+	
+	/**
+	 * Checks to see if the game board is empty
+	 * @return True if the array is empty. False if it is not empty.
+	 */
+	public boolean isEmpty () {		
+		for(int i = 0; i < MAX_LOCATIONS; i++)
+			if(gameLocation[i] == Piece.PEG)
+				return false;
+	
+		return true;
+	}
+	
+	/**
+	 * Fills the game board with the piece type specified
+	 * @param pieceType
+	 */
+	public void fillWith (Piece pieceType) {
+		for(int i = 0; i < MAX_LOCATIONS; i++)
+			gameLocation[i] = pieceType;
+	}
+
+	/**
+	 * Gets the number of piece types on the game board.
+	 * @param typeOfPiece
+	 * @return the number of piece types
+	 */
+	public int countOnBoard(Piece typeOfPiece){
+		int count = 0;
+		for(int i = 0; i < MAX_LOCATIONS; i++)
+			if(gameLocation[i] == typeOfPiece){
+				count++;
+			}
+		
+		return count;
+	}
+	/**
+	 * returns the maximum number of game board locations
+	 * @return the maximum number of locations on the board
+	 */
+	public int getMaxLoc(){
+		return MAX_LOCATIONS;
+	}
+}

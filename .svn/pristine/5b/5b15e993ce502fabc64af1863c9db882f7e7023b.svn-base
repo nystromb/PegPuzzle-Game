@@ -1,0 +1,44 @@
+package pegPuz;
+
+import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import pegPuz.PegPuzBoard.Dir;
+import pegPuz.PegPuzBoard.Piece;
+
+public class HexBoardTest {
+
+	HexBoard board;
+	
+	@Before
+	public void setUp() throws Exception {
+		board = new HexBoard();
+	}
+
+	@Test
+	public void checkInitBoard() {
+		assertEquals("", Piece.UNDEFINED, board.getWhatIsAtLoc(0));
+
+		assertEquals("", Piece.EMPTY, board.getWhatIsAtLoc(1));
+		assertEquals("", Piece.EMPTY, board.getWhatIsAtLoc(19));
+	}
+
+	@Test
+	public void checkSetLoc(){
+		assertEquals("", Piece.EMPTY, board.getWhatIsAtLoc(19));
+		board.setWhatIsAtLoc(19, Piece.PEG);
+		assertEquals("", Piece.PEG, board.getWhatIsAtLoc(19));
+		
+		board.setWhatIsAtLoc(1, Piece.PEG);
+		assertEquals("", Piece.PEG, board.getWhatIsAtLoc(1));
+	}
+	
+	@Test
+	public void checkNeighborLoc () {
+		int loc = board.getLocInDir(1, Dir.E);
+		assertEquals("", 2, loc);
+		assertEquals("", 7, board.getLocInDir(3, Dir.SE));
+	}
+}

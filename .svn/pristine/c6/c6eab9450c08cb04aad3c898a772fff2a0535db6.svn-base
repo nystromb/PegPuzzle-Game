@@ -1,0 +1,162 @@
+package pegPuz;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.junit.Before;
+
+import pegPuz.PegPuzGameModel.GameState;
+import pegPuz.PegPuzBoard.Piece;
+
+public class PegPuzGameModelTest {
+	
+	PegPuzBoard board;
+	PegPuzGameModel model;
+	
+	@Before
+	public void setUp() throws Exception {
+		board = new PegPuzBoard();
+		model = new PegPuzGameModel();
+	}
+	
+	@Test
+	public void checkCurrentState() {
+		PegPuzGameModel model = new PegPuzGameModel();
+		model.currentState = GameState.Ready;
+		assertEquals("Game is in Ready state", GameState.Ready, model.getState());
+		
+		//PegPuzGameModel model2 = new PegPuzGameModel(GameState.InProg);
+		//assertEquals("Game is in Ready state", GameState.InProg, model2.getState());
+		
+	}
+
+	@Test
+	public void checkCurrentLoc(){
+		model.startMoveLoc = 6;
+		assertEquals("Checks the current location", 6, model.getSelectedMove());
+
+		model.newGame();
+		model.playLoc(6);
+		assertEquals("Checks the current location", 6, model.getSelectedMove());
+	}
+	
+	@Test 
+	public void checkSetLoc(){
+		assertEquals("", Piece.EMPTY, model.getWhatIsAtLoc(1));
+		model.setWhatIsAtLoc(1, Piece.PEG);
+		assertEquals("", Piece.PEG, model.getWhatIsAtLoc(1));
+	}
+	
+
+	@Test
+	public void checkNewGame(){
+		model.newGame();
+		
+		assertEquals("Check the piece types after new game is started: loc 1", Piece.EMPTY, model.getWhatIsAtLoc(1));
+		assertEquals("Check the piece types after new game is started: loc 2", Piece.PEG, model.getWhatIsAtLoc(2));
+		assertEquals("Check the piece types after new game is started: loc 3", Piece.PEG, model.getWhatIsAtLoc(3));
+		assertEquals("Check the piece types after new game is started: loc 4", Piece.PEG, model.getWhatIsAtLoc(4));
+		assertEquals("Check the piece types after new game is started: loc 5", Piece.PEG, model.getWhatIsAtLoc(5));
+		assertEquals("Check the piece types after new game is started: loc 6", Piece.PEG, model.getWhatIsAtLoc(6));
+		assertEquals("Check the piece types after new game is started: loc 7", Piece.PEG, model.getWhatIsAtLoc(7));
+		assertEquals("Check the piece types after new game is started: loc 8", Piece.PEG, model.getWhatIsAtLoc(8));
+		assertEquals("Check the piece types after new game is started: loc 9", Piece.PEG, model.getWhatIsAtLoc(9));
+		assertEquals("Check the piece types after new game is started: loc 10", Piece.PEG, model.getWhatIsAtLoc(10));
+		assertEquals("Check the piece types after new game is started: loc 11", Piece.PEG, model.getWhatIsAtLoc(11));
+		assertEquals("Check the piece types after new game is started: loc 12", Piece.PEG, model.getWhatIsAtLoc(12));
+		assertEquals("Check the piece types after new game is started: loc 13", Piece.PEG, model.getWhatIsAtLoc(13));
+		assertEquals("Check the piece types after new game is started: loc 14", Piece.PEG, model.getWhatIsAtLoc(14));
+		assertEquals("Check the piece types after new game is started: loc 15", Piece.PEG, model.getWhatIsAtLoc(15));
+	}
+	
+	@Test
+	public void checkIsFirstMoveLegal(){
+		model.newGame();
+		//on a new game board, the only legal first moves are locations 4 and 6
+		assertTrue("Check for legel move", model.isFirstMoveLegal(4));
+		assertTrue("Check for legel move", model.isFirstMoveLegal(6));
+
+		assertFalse("Check for legel move", model.isFirstMoveLegal(1));
+		assertFalse("Check for legel move", model.isFirstMoveLegal(2));
+		assertFalse("Check for legel move", model.isFirstMoveLegal(3));
+		assertFalse("Check for legel move", model.isFirstMoveLegal(5));
+		assertFalse("Check for legel move", model.isFirstMoveLegal(7));
+		assertFalse("Check for legel move", model.isFirstMoveLegal(8));
+		assertFalse("Check for legel move", model.isFirstMoveLegal(9));
+		assertFalse("Check for legel move", model.isFirstMoveLegal(10));
+		assertFalse("Check for legel move", model.isFirstMoveLegal(11));
+		assertFalse("Check for legel move", model.isFirstMoveLegal(12));
+		assertFalse("Check for legel move", model.isFirstMoveLegal(13));
+		assertFalse("Check for legel move", model.isFirstMoveLegal(14));
+		assertFalse("Check for legel move", model.isFirstMoveLegal(15));
+	
+	}
+	
+	@Test
+	public void checkIsSecMoveLegal(){
+		model.newGame();
+		//on a new game board, the first location should be a valid second move
+		model.playLoc(4);
+		assertTrue("Check for second legel move", model.isSecMoveLegal(1));
+		
+		//rest should be false
+		assertFalse("Check for second legel move", model.isSecMoveLegal(2));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(3));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(4));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(5));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(6));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(7));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(8));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(9));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(10));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(11));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(12));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(13));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(14));
+		assertFalse("Check for second legel move", model.isSecMoveLegal(15));
+
+
+	}
+	
+	@Test
+	public void checkPlayLoc(){
+		model.newGame();
+		assertEquals("", Piece.PEG, model.getWhatIsAtLoc(6));
+		assertEquals("", Piece.EMPTY, model.getWhatIsAtLoc(1));
+		assertEquals("", Piece.PEG, model.getWhatIsAtLoc(3));
+
+		assertEquals("", GameState.Ready, model.getState());
+		model.playLoc(6);
+		
+		assertEquals("", 6, model.getSelectedMove());
+		assertEquals("", GameState.InProg, model.getState());
+		assertTrue("", model.isSecMoveLegal(1));
+		assertEquals("", Piece.PEG, model.getWhatIsAtLoc(3));
+
+		model.playLoc(1);
+		assertEquals("", Piece.EMPTY, model.getWhatIsAtLoc(6));
+		assertEquals("", Piece.EMPTY, model.getWhatIsAtLoc(3));
+		assertEquals("", Piece.PEG, model.getWhatIsAtLoc(1));
+		
+		model.playLoc(8);
+		model.playLoc(3);
+		assertEquals("", Piece.EMPTY, model.getWhatIsAtLoc(8));
+		assertEquals("", Piece.EMPTY, model.getWhatIsAtLoc(5));
+		assertEquals("", Piece.PEG, model.getWhatIsAtLoc(3));
+		
+	}
+	
+	@Test
+	public void checkIsGameOver(){
+		model.newGame();
+		assertFalse("", model.isGameOver());
+		
+		for(int i = 3; i <= PegPuzBoard.MAX_LOCATIONS; i++){
+			model.setWhatIsAtLoc(i, Piece.EMPTY);
+		}
+		
+		assertTrue("", model.isGameOver());
+		
+	}
+	
+}

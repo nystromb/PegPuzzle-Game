@@ -1,0 +1,128 @@
+package pegPuz;
+
+import javax.swing.JOptionPane;
+
+import pegPuz.PegPuzBoard.Dir;
+import pegPuz.PegPuzBoard.Piece;
+
+public class PegPuzGameModel {
+	public enum GameState {Ready, InProg};
+	PegPuzBoard board;
+	public int startMoveLoc;
+	int midLoc;
+	
+	GameState currentState;
+	public PegPuzGameModel () {
+		board = new PegPuzBoard();
+		currentState = GameState.Ready;
+		startMoveLoc = -1;
+		newGame();
+	}
+	
+	public PegPuzGameModel(GameState state){
+		board = new PegPuzBoard();
+		currentState = state;
+		startMoveLoc = -1;
+		newGame();
+	}
+	
+	public GameState getState(){
+		return currentState;
+	}
+	
+	public int getSelectedMove(){
+		return startMoveLoc;
+	} 
+	
+	public boolean isFirstMoveLegal(int locID){
+		//assume not legal
+		boolean result = false;
+			//check location to make sure the first move is a peg
+			if(board.getWhatIsAtLoc(locID) == Piece.PEG){
+				//get legal directions to make move
+				Dir[] validDir = board.getNeighborDir(locID);
+				//loop through each legal direction
+				for(int i = 0; i < validDir.length; i++){
+					//get mid location
+					int m = board.getLocInDir(locID, validDir[i]);
+					if(board.getWhatIsAtLoc(m) == Piece.PEG){
+						//get end location
+						int e = board.getLocInDir(m, validDir[i]);
+						//if the end location is an EMPTY peg
+						if(board.getWhatIsAtLoc(e) == Piece.EMPTY){
+							//peg loc is legal
+							result = true;
+						}
+					}
+				}
+			}
+			
+			return result;
+	}
+	
+	public boolean isSecMoveLegal(int locID){
+		boolean result = false;
+		if(board.getWhatIsAtLoc(locID) == Piece.EMPTY){
+			//get the valid move directions for the given location
+			Dir[] validDir = board.getNeighborDir(locID);
+			//loop through each direction
+			for(int i = 0; i < validDir.length; i++){
+				//get the mid location
+				int m = board.getLocInDir(locID, validDir[i]);
+				//if the end location is the start location
+				if(board.getLocInDir(m, validDir[i]) == startMoveLoc){
+					//m is the midLoc needed to jump
+					midLoc = m;
+					//sec move is legal
+					result = true;
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	public void playLoc(int locID){
+		if(currentState == GameState.Ready && isFirstMoveLegal(locID)){
+				currentState = GameState.InProg;
+				startMoveLoc = locID;
+		}
+		else if(currentState == GameState.InProg && isSecMoveLegal(locID)){
+				board.setWhatIsAtLoc(startMoveLoc, Piece.EMPTY);
+				board.setWhatIsAtLoc(midLoc, Piece.EMPTY);
+				board.setWhatIsAtLoc(locID, Piece.PEG);
+				startMoveLoc = -1;
+				currentState = GameState.Ready;
+		}
+		
+	}
+
+	public void newGame(){
+		board.setWhatIsAtLoc(1, Piece.EMPTY);
+		for(int loc = 2; loc <= PegPuzBoard.MAX_LOCATIONS; loc++){
+				board.setWhatIsAtLoc(loc, Piece.PEG);
+		}
+		startMoveLoc = -1;
+		currentState = GameState.Ready;
+	}
+	
+	public boolean isGameOver(){
+		boolean result = true;
+		for(int loc = 1; loc <= PegPuzBoard.MAX_LOCATIONS; loc++){
+			if(board.getWhatIsAtLoc(loc) == Piece.PEG && isFirstMoveLegal(loc)){
+				result = false;
+			}
+		}
+		
+		return result;
+	}
+
+	public Piece getWhatIsAtLoc(int locID) {
+		return board.getWhatIsAtLoc(locID);
+	}
+
+	public void setWhatIsAtLoc(int i, Piece pieceType) {
+		board.setWhatIsAtLoc(i, pieceType);
+	}
+	
+}
